@@ -4,514 +4,571 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Diversification & The Holy Grail of Investing</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/Recharts.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
         body { margin: 0; padding: 0; }
+        .tab-btn.active { background-color: #10b981; color: white; }
+        input[type="range"] { accent-color: #10b981; }
     </style>
 </head>
-<body>
-    <div id="root"></div>
-    
-    <script type="text/babel">
-        const { useState, useMemo } = React;
-        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, AreaChart, Area } = Recharts;
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-2 text-emerald-400">
+            The Holy Grail of Investing
+        </h1>
+        <p class="text-center text-slate-400 mb-2">
+            Ray Dalio's Framework for Diversification
+        </p>
+        <p class="text-center text-slate-500 text-sm mb-8 italic">
+            "Making a handful of good uncorrelated bets that are balanced and leveraged well is the surest way of having a lot of upside without being exposed to unacceptable downside."
+        </p>
 
-        function PortfolioDiversification() {
-            const [correlationDemo, setCorrelationDemo] = useState(0);
-            const [activeTab, setActiveTab] = useState('concept');
+        <!-- Dalio Quote Box -->
+        <div class="bg-gradient-to-r from-amber-500/10 to-emerald-500/10 rounded-xl p-6 mb-8 border border-amber-500/30">
+            <h2 class="text-xl font-semibold text-amber-400 mb-3">🏆 The Holy Grail Discovery</h2>
+            <p class="text-slate-300 leading-relaxed mb-4">
+                Ray Dalio, founder of Bridgewater Associates (the world's largest hedge fund), discovered that with 
+                <span class="text-emerald-400 font-semibold">15-20 good, uncorrelated return streams</span>, 
+                you can <span class="text-amber-400 font-semibold">reduce portfolio risk by ~80%</span> without 
+                reducing expected returns. This improves your return-to-risk ratio by a factor of 5.
+            </p>
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-red-400">40%</div>
+                    <div class="text-xs text-slate-400">Probability of loss with 1 asset</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-amber-400">~11%</div>
+                    <div class="text-xs text-slate-400">Probability of loss with 15-20 uncorrelated</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-emerald-400">5x</div>
+                    <div class="text-xs text-slate-400">Improvement in return/risk ratio</div>
+                </div>
+            </div>
+        </div>
 
-            // Generate risk reduction curve data - showing return-to-risk ratio improvement
-            const riskReductionData = useMemo(() => {
-                const data = [];
-                for (let n = 1; n <= 25; n++) {
-                    // For uncorrelated assets: risk reduces by 1/√n
-                    // Return-to-risk ratio improves by √n
-                    const relativeRisk = 1 / Math.sqrt(n);
-                    const returnToRiskRatio = Math.sqrt(n);
-                    const riskReduction = (1 - relativeRisk) * 100;
-                    data.push({
-                        assets: n,
-                        risk: relativeRisk * 100,
-                        riskReduction: riskReduction,
-                        returnToRisk: returnToRiskRatio,
-                        probLoss: (0.4 / Math.sqrt(n)) * 100 // Approximate probability of annual loss
-                    });
-                }
-                return data;
-            }, []);
+        <!-- Tab Navigation -->
+        <div class="flex gap-2 mb-6 flex-wrap">
+            <button class="tab-btn active px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="concept">📐 The Math</button>
+            <button class="tab-btn px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="correlation">🔗 Correlation Matters</button>
+            <button class="tab-btn px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="interactive">📊 Interactive Demo</button>
+            <button class="tab-btn px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="application">💼 Real Application</button>
+        </div>
 
-            // Data for correlation comparison
-            const correlationComparisonData = useMemo(() => {
-                const data = [];
-                for (let n = 1; n <= 20; n++) {
-                    // Risk reduction varies with correlation
-                    const uncorrelated = (1 / Math.sqrt(n)) * 100;
-                    const corr60 = Math.sqrt((1 + (n-1) * 0.6) / n) * 100; // 60% correlated
-                    const corr30 = Math.sqrt((1 + (n-1) * 0.3) / n) * 100; // 30% correlated
-                    data.push({
-                        assets: n,
-                        'Uncorrelated (ρ=0)': uncorrelated,
-                        'Low Correlation (ρ=0.3)': corr30,
-                        'Typical Stocks (ρ=0.6)': corr60,
-                    });
-                }
-                return data;
-            }, []);
+        <!-- Tab Content -->
+        <div id="tab-concept" class="tab-content space-y-6">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-sky-400 mb-4">
+                    📉 The Holy Grail Chart: Risk Reduction vs Number of Assets
+                </h2>
+                <p class="text-slate-400 mb-4 text-sm">
+                    This is the chart that changed Dalio's approach to investing. It shows how adding uncorrelated return streams dramatically reduces risk.
+                </p>
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="riskChart"></canvas>
+                </div>
 
-            // Generate sample returns for visualization
-            const generateReturns = (seed, correlation = 0) => {
-                const returns = [];
-                const n = 50;
-                
-                const random = (s) => {
-                    const x = Math.sin(s * 9999) * 10000;
-                    return x - Math.floor(x);
-                };
+                <!-- Milestone Table -->
+                <div class="mt-6 overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="py-2 px-3 text-left text-slate-400"># Streams</th>
+                                <th class="py-2 px-3 text-left text-slate-400">Risk Reduction</th>
+                                <th class="py-2 px-3 text-left text-slate-400">Return/Risk Ratio</th>
+                                <th class="py-2 px-3 text-left text-slate-400">Prob. of Annual Loss</th>
+                            </tr>
+                        </thead>
+                        <tbody id="milestoneTable"></tbody>
+                    </table>
+                </div>
+            </div>
 
-                for (let i = 0; i < n; i++) {
-                    const r1 = (random(seed + i) - 0.5) * 20;
-                    const independent = (random(seed + i + 1000) - 0.5) * 20;
-                    const r2 = correlation * r1 + Math.sqrt(1 - correlation * correlation) * independent;
-                    
-                    returns.push({
-                        period: i + 1,
-                        asset1: 8 + r1,
-                        asset2: 8 + r2,
-                        portfolio: 8 + (r1 + r2) / 2
-                    });
-                }
-                return returns;
-            };
+            <!-- Math Explanation -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-purple-400 mb-4">🧮 The Mathematics</h2>
+                <div class="bg-slate-900/50 rounded-lg p-4 font-mono text-sm mb-4">
+                    <p class="text-purple-400 mb-2">For n uncorrelated assets with equal weights (1/n) and equal variance σ²:</p>
+                    <p class="mb-1">Portfolio Variance = <span class="text-emerald-400">n × (1/n)² × σ²</span> = <span class="text-amber-400">σ²/n</span></p>
+                    <p class="mb-1">Portfolio Std Dev = <span class="text-amber-400">σ/√n</span></p>
+                    <p class="mt-3 text-sky-400">Return-to-Risk Ratio improves by factor of <span class="text-amber-400">√n</span></p>
+                </div>
+                <p class="text-slate-400 text-sm">
+                    This is why at n=15, you get √15 ≈ 3.9x improvement in return/risk ratio, and at n=20, √20 ≈ 4.5x improvement.
+                </p>
+            </div>
+        </div>
 
-            const returnsData = useMemo(() => generateReturns(42, correlationDemo), [correlationDemo]);
+        <div id="tab-correlation" class="tab-content space-y-6 hidden">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-rose-400 mb-4">
+                    ⚠️ Why Most Portfolios Aren't Really Diversified
+                </h2>
+                <p class="text-slate-300 mb-4">
+                    Dalio discovered that <span class="text-rose-400 font-semibold">individual stocks within an asset class are typically about 60% correlated</span> with each other. 
+                    This means you could put a thousand stocks in your portfolio and still not be truly diversified!
+                </p>
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="correlationChart"></canvas>
+                </div>
+                <div class="mt-4 p-4 bg-rose-500/10 border border-rose-500/30 rounded-lg">
+                    <p class="text-slate-300 text-sm">
+                        <span class="text-rose-400 font-semibold">Key Insight:</span> With 60% correlated assets (typical stocks), 
+                        even 20 holdings only reduce risk to ~78%. But with truly uncorrelated assets, 
+                        just 5 holdings can achieve the same risk reduction!
+                    </p>
+                </div>
+            </div>
 
-            // Calculate statistics
-            const calcStats = (data, key) => {
-                const values = data.map(d => d[key]);
-                const mean = values.reduce((a, b) => a + b, 0) / values.length;
-                const variance = values.reduce((a, b) => a + (b - mean) ** 2, 0) / values.length;
-                return { mean: mean.toFixed(1), stdDev: Math.sqrt(variance).toFixed(1) };
-            };
-
-            const asset1Stats = calcStats(returnsData, 'asset1');
-            const asset2Stats = calcStats(returnsData, 'asset2');
-            const portfolioStats = calcStats(returnsData, 'portfolio');
-
-            // Key milestone data for Holy Grail
-            const milestoneData = [
-                { n: 1, riskReduction: '0%', returnToRisk: '1.0x', probLoss: '~40%' },
-                { n: 3, riskReduction: '42%', returnToRisk: '1.7x', probLoss: '~23%' },
-                { n: 5, riskReduction: '55%', returnToRisk: '2.2x', probLoss: '~18%' },
-                { n: 10, riskReduction: '68%', returnToRisk: '3.2x', probLoss: '~13%' },
-                { n: 15, riskReduction: '74%', returnToRisk: '3.9x', probLoss: '~10%' },
-                { n: 20, riskReduction: '78%', returnToRisk: '4.5x', probLoss: '~9%' },
-            ];
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
-                    <div className="max-w-6xl mx-auto">
-                        <h1 className="text-3xl font-bold text-center mb-2 text-emerald-400">
-                            The Holy Grail of Investing
-                        </h1>
-                        <p className="text-center text-slate-400 mb-2">
-                            Ray Dalio's Framework for Diversification
-                        </p>
-                        <p className="text-center text-slate-500 text-sm mb-8">
-                            "Making a handful of good uncorrelated bets that are balanced and leveraged well is the surest way of having a lot of upside without being exposed to unacceptable downside."
-                        </p>
-
-                        {/* Dalio Quote Box */}
-                        <div className="bg-gradient-to-r from-amber-500/10 to-emerald-500/10 rounded-xl p-6 mb-8 border border-amber-500/30">
-                            <h2 className="text-xl font-semibold text-amber-400 mb-3">🏆 The Holy Grail Discovery</h2>
-                            <p className="text-slate-300 leading-relaxed mb-4">
-                                Ray Dalio, founder of Bridgewater Associates (the world's largest hedge fund), discovered that with 
-                                <span className="text-emerald-400 font-semibold"> 15-20 good, uncorrelated return streams</span>, 
-                                you can <span className="text-amber-400 font-semibold">reduce portfolio risk by ~80%</span> without 
-                                reducing expected returns. This improves your return-to-risk ratio by a factor of 5.
-                            </p>
-                            <div className="grid md:grid-cols-3 gap-4 text-center">
-                                <div className="bg-slate-800/50 rounded-lg p-3">
-                                    <div className="text-2xl font-bold text-red-400">40%</div>
-                                    <div className="text-xs text-slate-400">Probability of loss with 1 asset</div>
-                                </div>
-                                <div className="bg-slate-800/50 rounded-lg p-3">
-                                    <div className="text-2xl font-bold text-amber-400">~11%</div>
-                                    <div className="text-xs text-slate-400">Probability of loss with 15-20 uncorrelated</div>
-                                </div>
-                                <div className="bg-slate-800/50 rounded-lg p-3">
-                                    <div className="text-2xl font-bold text-emerald-400">5x</div>
-                                    <div className="text-xs text-slate-400">Improvement in return/risk ratio</div>
-                                </div>
-                            </div>
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-sky-400 mb-4">🔗 Understanding Correlation</h2>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+                        <div class="text-2xl font-bold text-emerald-400 mb-2">ρ = 0</div>
+                        <div class="text-sm text-slate-300">
+                            <strong>Uncorrelated:</strong> Assets move independently. When one zigs, the other might zig, zag, or do nothing.
                         </div>
-
-                        {/* Tab Navigation */}
-                        <div className="flex gap-2 mb-6 flex-wrap">
-                            {[
-                                { id: 'concept', label: '📐 The Math' },
-                                { id: 'correlation', label: '🔗 Correlation Matters' },
-                                { id: 'interactive', label: '📊 Interactive Demo' },
-                                { id: 'application', label: '💼 Real Application' }
-                            ].map(tab => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                                        activeTab === tab.id 
-                                            ? 'bg-emerald-500 text-white' 
-                                            : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                                    }`}
-                                >
-                                    {tab.label}
-                                </button>
-                            ))}
+                    </div>
+                    <div class="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30">
+                        <div class="text-2xl font-bold text-amber-400 mb-2">ρ = +1</div>
+                        <div class="text-sm text-slate-300">
+                            <strong>Perfectly Correlated:</strong> Assets move in lockstep. No diversification benefit at all.
                         </div>
-
-                        {/* Tab Content */}
-                        {activeTab === 'concept' && (
-                            <div className="space-y-6">
-                                {/* Risk Reduction Curve */}
-                                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                                    <h2 className="text-xl font-semibold text-sky-400 mb-4">
-                                        📉 The Holy Grail Chart: Risk Reduction vs Number of Assets
-                                    </h2>
-                                    <p className="text-slate-400 mb-4 text-sm">
-                                        This is the chart that changed Dalio's approach to investing. It shows how adding uncorrelated return streams dramatically reduces risk.
-                                    </p>
-                                    
-                                    <div style={{height: '320px', width: '100%'}}>
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <AreaChart data={riskReductionData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
-                                                <defs>
-                                                    <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
-                                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                                    </linearGradient>
-                                                </defs>
-                                                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                                                <XAxis 
-                                                    dataKey="assets" 
-                                                    stroke="#94a3b8"
-                                                    label={{ value: 'Number of Uncorrelated Return Streams', position: 'bottom', fill: '#94a3b8', offset: 20 }}
-                                                />
-                                                <YAxis 
-                                                    stroke="#94a3b8"
-                                                    domain={[0, 100]}
-                                                    label={{ value: 'Portfolio Risk (% of single asset)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
-                                                />
-                                                <Tooltip 
-                                                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
-                                                    formatter={(value, name) => {
-                                                        if (name === 'risk') return [`${value.toFixed(1)}%`, 'Relative Risk'];
-                                                        return [value.toFixed(1), name];
-                                                    }}
-                                                    labelFormatter={(label) => `${label} uncorrelated streams`}
-                                                />
-                                                <Area 
-                                                    type="monotone" 
-                                                    dataKey="risk" 
-                                                    stroke="#10b981" 
-                                                    strokeWidth={3}
-                                                    fill="url(#riskGradient)"
-                                                />
-                                                <ReferenceLine x={15} stroke="#f59e0b" strokeDasharray="5 5" label={{ value: '15 assets: ~74% risk reduction', fill: '#f59e0b', fontSize: 11, position: 'top' }} />
-                                            </AreaChart>
-                                        </ResponsiveContainer>
-                                    </div>
-
-                                    {/* Milestone Table */}
-                                    <div className="mt-6 overflow-x-auto">
-                                        <table className="w-full text-sm">
-                                            <thead>
-                                                <tr className="border-b border-slate-700">
-                                                    <th className="py-2 px-3 text-left text-slate-400"># Streams</th>
-                                                    <th className="py-2 px-3 text-left text-slate-400">Risk Reduction</th>
-                                                    <th className="py-2 px-3 text-left text-slate-400">Return/Risk Ratio</th>
-                                                    <th className="py-2 px-3 text-left text-slate-400">Prob. of Annual Loss</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {milestoneData.map((row, i) => (
-                                                    <tr key={i} className={`border-b border-slate-800 ${row.n === 15 ? 'bg-emerald-500/10' : ''}`}>
-                                                        <td className="py-2 px-3 text-emerald-400 font-mono font-bold">{row.n}</td>
-                                                        <td className="py-2 px-3">
-                                                            <div className="flex items-center gap-2">
-                                                                <div 
-                                                                    className="h-3 bg-emerald-500 rounded"
-                                                                    style={{ width: `${parseInt(row.riskReduction)}%`, maxWidth: '80px' }}
-                                                                />
-                                                                <span className="text-slate-300">{row.riskReduction}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td className="py-2 px-3 text-sky-400 font-mono">{row.returnToRisk}</td>
-                                                        <td className="py-2 px-3 text-amber-400">{row.probLoss}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                {/* Math Explanation */}
-                                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                                    <h2 className="text-xl font-semibold text-purple-400 mb-4">🧮 The Mathematics</h2>
-                                    <div className="bg-slate-900/50 rounded-lg p-4 font-mono text-sm mb-4">
-                                        <p className="text-purple-400 mb-2">For n uncorrelated assets with equal weights (1/n) and equal variance σ²:</p>
-                                        <p className="mb-1">Portfolio Variance = <span className="text-emerald-400">n × (1/n)² × σ²</span> = <span className="text-amber-400">σ²/n</span></p>
-                                        <p className="mb-1">Portfolio Std Dev = <span className="text-amber-400">σ/√n</span></p>
-                                        <p className="mt-3 text-sky-400">Return-to-Risk Ratio improves by factor of <span className="text-amber-400">√n</span></p>
-                                    </div>
-                                    <p className="text-slate-400 text-sm">
-                                        This is why at n=15, you get √15 ≈ 3.9x improvement in return/risk ratio, and at n=20, √20 ≈ 4.5x improvement.
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'correlation' && (
-                            <div className="space-y-6">
-                                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                                    <h2 className="text-xl font-semibold text-rose-400 mb-4">
-                                        ⚠️ Why Most Portfolios Aren't Really Diversified
-                                    </h2>
-                                    <p className="text-slate-300 mb-4">
-                                        Dalio discovered that <span className="text-rose-400 font-semibold">individual stocks within an asset class are typically about 60% correlated</span> with each other. 
-                                        This means you could put a thousand stocks in your portfolio and still not be truly diversified!
-                                    </p>
-                                    
-                                    <div style={{height: '320px', width: '100%'}}>
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <LineChart data={correlationComparisonData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
-                                                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                                                <XAxis 
-                                                    dataKey="assets" 
-                                                    stroke="#94a3b8"
-                                                    label={{ value: 'Number of Assets', position: 'bottom', fill: '#94a3b8', offset: 20 }}
-                                                />
-                                                <YAxis 
-                                                    stroke="#94a3b8"
-                                                    domain={[0, 100]}
-                                                    label={{ value: 'Portfolio Risk (%)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
-                                                />
-                                                <Tooltip 
-                                                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
-                                                    formatter={(value) => [`${value.toFixed(1)}%`]}
-                                                />
-                                                <Legend />
-                                                <Line type="monotone" dataKey="Typical Stocks (ρ=0.6)" stroke="#f87171" strokeWidth={2} dot={false} />
-                                                <Line type="monotone" dataKey="Low Correlation (ρ=0.3)" stroke="#fbbf24" strokeWidth={2} dot={false} />
-                                                <Line type="monotone" dataKey="Uncorrelated (ρ=0)" stroke="#10b981" strokeWidth={3} dot={false} />
-                                            </LineChart>
-                                        </ResponsiveContainer>
-                                    </div>
-
-                                    <div className="mt-4 p-4 bg-rose-500/10 border border-rose-500/30 rounded-lg">
-                                        <p className="text-slate-300 text-sm">
-                                            <span className="text-rose-400 font-semibold">Key Insight:</span> With 60% correlated assets (typical stocks), 
-                                            even 20 holdings only reduce risk to ~78%. But with truly uncorrelated assets, 
-                                            just 5 holdings can achieve the same risk reduction!
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                                    <h2 className="text-xl font-semibold text-sky-400 mb-4">🔗 Understanding Correlation</h2>
-                                    <div className="grid md:grid-cols-3 gap-4">
-                                        <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
-                                            <div className="text-2xl font-bold text-emerald-400 mb-2">ρ = 0</div>
-                                            <div className="text-sm text-slate-300">
-                                                <strong>Uncorrelated:</strong> Assets move independently. When one zigs, the other might zig, zag, or do nothing.
-                                            </div>
-                                        </div>
-                                        <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30">
-                                            <div className="text-2xl font-bold text-amber-400 mb-2">ρ = +1</div>
-                                            <div className="text-sm text-slate-300">
-                                                <strong>Perfectly Correlated:</strong> Assets move in lockstep. No diversification benefit at all.
-                                            </div>
-                                        </div>
-                                        <div className="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30">
-                                            <div className="text-2xl font-bold text-sky-400 mb-2">ρ = -1</div>
-                                            <div className="text-sm text-slate-300">
-                                                <strong>Negatively Correlated:</strong> Assets move opposite. Maximum diversification benefit.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'interactive' && (
-                            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                                <h2 className="text-xl font-semibold text-amber-400 mb-4">
-                                    📊 Interactive Demo: Two Assets Combined
-                                </h2>
-                                <p className="text-slate-400 mb-4 text-sm">
-                                    Drag the slider to see how correlation affects diversification benefits. Watch how the green portfolio line becomes smoother as correlation decreases.
-                                </p>
-                                
-                                <div className="mb-6">
-                                    <label className="block text-slate-400 mb-2">
-                                        Correlation between assets: <span className="text-emerald-400 font-mono text-lg">{correlationDemo.toFixed(2)}</span>
-                                    </label>
-                                    <input
-                                        type="range"
-                                        min="-0.5"
-                                        max="1"
-                                        step="0.1"
-                                        value={correlationDemo}
-                                        onChange={(e) => setCorrelationDemo(parseFloat(e.target.value))}
-                                        className="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                                        style={{accentColor: '#10b981'}}
-                                    />
-                                    <div className="flex justify-between text-xs text-slate-500 mt-1">
-                                        <span>Negative (-0.5)</span>
-                                        <span>Uncorrelated (0)</span>
-                                        <span>Perfectly Correlated (1)</span>
-                                    </div>
-                                </div>
-
-                                <div style={{height: '300px', width: '100%'}}>
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={returnsData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                                            <XAxis dataKey="period" stroke="#94a3b8" label={{ value: 'Time Period', position: 'bottom', fill: '#94a3b8', offset: 20 }} />
-                                            <YAxis stroke="#94a3b8" domain={[-15, 30]} label={{ value: 'Return (%)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
-                                            <Tooltip 
-                                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
-                                                formatter={(value) => [`${value.toFixed(1)}%`]}
-                                            />
-                                            <Legend />
-                                            <ReferenceLine y={8} stroke="#666" strokeDasharray="3 3" />
-                                            <Line type="monotone" dataKey="asset1" stroke="#f87171" strokeWidth={1.5} dot={false} name="Asset 1" opacity={0.7} />
-                                            <Line type="monotone" dataKey="asset2" stroke="#60a5fa" strokeWidth={1.5} dot={false} name="Asset 2" opacity={0.7} />
-                                            <Line type="monotone" dataKey="portfolio" stroke="#10b981" strokeWidth={3} dot={false} name="50/50 Portfolio" />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </div>
-
-                                {/* Statistics comparison */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                                    <div className="bg-red-500/10 rounded-lg p-4 border border-red-500/30">
-                                        <h3 className="text-red-400 font-semibold mb-2">Asset 1</h3>
-                                        <p className="text-slate-300">Mean: <span className="text-white font-mono">{asset1Stats.mean}%</span></p>
-                                        <p className="text-slate-300">Std Dev: <span className="text-white font-mono">{asset1Stats.stdDev}%</span></p>
-                                    </div>
-                                    <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
-                                        <h3 className="text-blue-400 font-semibold mb-2">Asset 2</h3>
-                                        <p className="text-slate-300">Mean: <span className="text-white font-mono">{asset2Stats.mean}%</span></p>
-                                        <p className="text-slate-300">Std Dev: <span className="text-white font-mono">{asset2Stats.stdDev}%</span></p>
-                                    </div>
-                                    <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
-                                        <h3 className="text-emerald-400 font-semibold mb-2">Portfolio (50/50)</h3>
-                                        <p className="text-slate-300">Mean: <span className="text-white font-mono">{portfolioStats.mean}%</span></p>
-                                        <p className="text-slate-300">Std Dev: <span className="text-emerald-400 font-mono font-bold">{portfolioStats.stdDev}%</span></p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-4 p-4 bg-slate-900/50 rounded-lg">
-                                    <p className="text-slate-300 text-sm">
-                                        <span className="text-emerald-400 font-semibold">Notice:</span> With correlation = {correlationDemo.toFixed(1)}, 
-                                        the portfolio maintains a similar expected return ({portfolioStats.mean}%), 
-                                        but the standard deviation is {portfolioStats.stdDev}% — 
-                                        {correlationDemo < 0.3 ? (
-                                            <span className="text-emerald-400"> significantly lower than either individual asset! This is the Holy Grail at work.</span>
-                                        ) : correlationDemo < 0.7 ? (
-                                            <span className="text-amber-400"> some diversification benefit, but not as dramatic.</span>
-                                        ) : (
-                                            <span className="text-red-400"> minimal diversification benefit because assets move together.</span>
-                                        )}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'application' && (
-                            <div className="space-y-6">
-                                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                                    <h2 className="text-xl font-semibold text-emerald-400 mb-4">💼 Dalio's All Weather Portfolio</h2>
-                                    <p className="text-slate-300 mb-4">
-                                        Dalio applied the Holy Grail principle to create the "All Weather" portfolio, designed to perform reasonably well 
-                                        across all four economic "seasons":
-                                    </p>
-                                    
-                                    <div className="grid md:grid-cols-2 gap-4 mb-6">
-                                        <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
-                                            <h3 className="text-emerald-400 font-semibold mb-2">📈 Rising Growth</h3>
-                                            <p className="text-sm text-slate-400">Stocks, corporate bonds, commodities tend to do well</p>
-                                        </div>
-                                        <div className="bg-red-500/10 rounded-lg p-4 border border-red-500/30">
-                                            <h3 className="text-red-400 font-semibold mb-2">📉 Falling Growth</h3>
-                                            <p className="text-sm text-slate-400">Treasury bonds, TIPS tend to do well</p>
-                                        </div>
-                                        <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30">
-                                            <h3 className="text-amber-400 font-semibold mb-2">🔥 Rising Inflation</h3>
-                                            <p className="text-sm text-slate-400">Commodities, TIPS, gold tend to do well</p>
-                                        </div>
-                                        <div className="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30">
-                                            <h3 className="text-sky-400 font-semibold mb-2">❄️ Falling Inflation</h3>
-                                            <p className="text-sm text-slate-400">Stocks, treasury bonds tend to do well</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-slate-900/50 rounded-lg p-4">
-                                        <p className="text-slate-400 text-sm">
-                                            <span className="text-amber-400 font-semibold">Key Principle:</span> Don't try to predict which scenario will happen. 
-                                            Build a portfolio that can survive all scenarios. "Preparedness is preferable to foresight."
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-                                    <h2 className="text-xl font-semibold text-purple-400 mb-4">🎯 Key Takeaways</h2>
-                                    <div className="space-y-3">
-                                        <div className="flex items-start gap-3">
-                                            <span className="text-emerald-400 text-xl">✓</span>
-                                            <p className="text-slate-300">The first 3 uncorrelated assets reduce risk by almost half, doubling your return-to-risk ratio</p>
-                                        </div>
-                                        <div className="flex items-start gap-3">
-                                            <span className="text-emerald-400 text-xl">✓</span>
-                                            <p className="text-slate-300">15-20 uncorrelated streams can reduce risk by 80% and improve return/risk ratio by 5x</p>
-                                        </div>
-                                        <div className="flex items-start gap-3">
-                                            <span className="text-emerald-400 text-xl">✓</span>
-                                            <p className="text-slate-300">True diversification is about finding uncorrelated return streams, not just owning many assets</p>
-                                        </div>
-                                        <div className="flex items-start gap-3">
-                                            <span className="text-emerald-400 text-xl">✓</span>
-                                            <p className="text-slate-300">Most stock portfolios are 60% correlated — owning 1000 stocks doesn't diversify much more than 5</p>
-                                        </div>
-                                        <div className="flex items-start gap-3">
-                                            <span className="text-amber-400 text-xl">⚠</span>
-                                            <p className="text-slate-300">Correlations can increase during market stress, so true uncorrelation is harder than it seems</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-gradient-to-r from-emerald-500/10 to-sky-500/10 rounded-xl p-6 border border-emerald-500/30">
-                                    <h2 className="text-xl font-semibold text-emerald-400 mb-3">💡 The Bottom Line</h2>
-                                    <p className="text-slate-300 italic">
-                                        "A lot of people think that the most important thing you could do is find the best investments. 
-                                        That's important, but there is no great single best investment that can compete with proper diversification. 
-                                        The power of portfolio construction is the key."
-                                    </p>
-                                    <p className="text-slate-500 text-sm mt-2">— Ray Dalio</p>
-                                </div>
-                            </div>
-                        )}
-
-                        <p className="text-center text-slate-600 text-xs mt-8">
-                            Based on Ray Dalio's "Holy Grail of Investing" framework from Principles and Bridgewater research
-                        </p>
+                    </div>
+                    <div class="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30">
+                        <div class="text-2xl font-bold text-sky-400 mb-2">ρ = -1</div>
+                        <div class="text-sm text-slate-300">
+                            <strong>Negatively Correlated:</strong> Assets move opposite. Maximum diversification benefit.
+                        </div>
                     </div>
                 </div>
-            );
+            </div>
+        </div>
+
+        <div id="tab-interactive" class="tab-content hidden">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-amber-400 mb-4">
+                    📊 Interactive Demo: Two Assets Combined
+                </h2>
+                <p class="text-slate-400 mb-4 text-sm">
+                    Drag the slider to see how correlation affects diversification benefits. Watch how the green portfolio line becomes smoother as correlation decreases.
+                </p>
+                
+                <div class="mb-6">
+                    <label class="block text-slate-400 mb-2">
+                        Correlation between assets: <span id="correlationValue" class="text-emerald-400 font-mono text-lg">0.00</span>
+                    </label>
+                    <input
+                        type="range"
+                        id="correlationSlider"
+                        min="-50"
+                        max="100"
+                        value="0"
+                        class="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                        <span>Negative (-0.5)</span>
+                        <span>Uncorrelated (0)</span>
+                        <span>Perfectly Correlated (1)</span>
+                    </div>
+                </div>
+
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="returnsChart"></canvas>
+                </div>
+
+                <!-- Statistics comparison -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-red-500/10 rounded-lg p-4 border border-red-500/30">
+                        <h3 class="text-red-400 font-semibold mb-2">Asset 1</h3>
+                        <p class="text-slate-300">Mean: <span id="asset1Mean" class="text-white font-mono">8.0%</span></p>
+                        <p class="text-slate-300">Std Dev: <span id="asset1Std" class="text-white font-mono">5.8%</span></p>
+                    </div>
+                    <div class="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
+                        <h3 class="text-blue-400 font-semibold mb-2">Asset 2</h3>
+                        <p class="text-slate-300">Mean: <span id="asset2Mean" class="text-white font-mono">8.0%</span></p>
+                        <p class="text-slate-300">Std Dev: <span id="asset2Std" class="text-white font-mono">5.8%</span></p>
+                    </div>
+                    <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+                        <h3 class="text-emerald-400 font-semibold mb-2">Portfolio (50/50)</h3>
+                        <p class="text-slate-300">Mean: <span id="portfolioMean" class="text-white font-mono">8.0%</span></p>
+                        <p class="text-slate-300">Std Dev: <span id="portfolioStd" class="text-emerald-400 font-mono font-bold">4.1%</span></p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-slate-900/50 rounded-lg">
+                    <p class="text-slate-300 text-sm">
+                        <span class="text-emerald-400 font-semibold">Notice:</span> 
+                        <span id="insightText">With low correlation, the portfolio maintains a similar expected return but with significantly lower volatility. This is the Holy Grail at work.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-application" class="tab-content space-y-6 hidden">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-emerald-400 mb-4">💼 Dalio's All Weather Portfolio</h2>
+                <p class="text-slate-300 mb-4">
+                    Dalio applied the Holy Grail principle to create the "All Weather" portfolio, designed to perform reasonably well 
+                    across all four economic "seasons":
+                </p>
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+                        <h3 class="text-emerald-400 font-semibold mb-2">📈 Rising Growth</h3>
+                        <p class="text-sm text-slate-400">Stocks, corporate bonds, commodities tend to do well</p>
+                    </div>
+                    <div class="bg-red-500/10 rounded-lg p-4 border border-red-500/30">
+                        <h3 class="text-red-400 font-semibold mb-2">📉 Falling Growth</h3>
+                        <p class="text-sm text-slate-400">Treasury bonds, TIPS tend to do well</p>
+                    </div>
+                    <div class="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30">
+                        <h3 class="text-amber-400 font-semibold mb-2">🔥 Rising Inflation</h3>
+                        <p class="text-sm text-slate-400">Commodities, TIPS, gold tend to do well</p>
+                    </div>
+                    <div class="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30">
+                        <h3 class="text-sky-400 font-semibold mb-2">❄️ Falling Inflation</h3>
+                        <p class="text-sm text-slate-400">Stocks, treasury bonds tend to do well</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4">
+                    <p class="text-slate-400 text-sm">
+                        <span class="text-amber-400 font-semibold">Key Principle:</span> Don't try to predict which scenario will happen. 
+                        Build a portfolio that can survive all scenarios. "Preparedness is preferable to foresight."
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-purple-400 mb-4">🎯 Key Takeaways</h2>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">The first 3 uncorrelated assets reduce risk by almost half, doubling your return-to-risk ratio</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">15-20 uncorrelated streams can reduce risk by 80% and improve return/risk ratio by 5x</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">True diversification is about finding uncorrelated return streams, not just owning many assets</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">Most stock portfolios are 60% correlated — owning 1000 stocks doesn't diversify much more than 5</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-amber-400 text-xl">⚠</span>
+                        <p class="text-slate-300">Correlations can increase during market stress, so true uncorrelation is harder than it seems</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-emerald-500/10 to-sky-500/10 rounded-xl p-6 border border-emerald-500/30">
+                <h2 class="text-xl font-semibold text-emerald-400 mb-3">💡 The Bottom Line</h2>
+                <p class="text-slate-300 italic">
+                    "A lot of people think that the most important thing you could do is find the best investments. 
+                    That's important, but there is no great single best investment that can compete with proper diversification. 
+                    The power of portfolio construction is the key."
+                </p>
+                <p class="text-slate-500 text-sm mt-2">— Ray Dalio</p>
+            </div>
+        </div>
+
+        <p class="text-center text-slate-600 text-xs mt-8">
+            Based on Ray Dalio's "Holy Grail of Investing" framework from Principles and Bridgewater research
+        </p>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // Chart.js defaults for dark theme
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#334155';
+
+        // Generate risk reduction data
+        const riskData = [];
+        const labels = [];
+        for (let n = 1; n <= 25; n++) {
+            labels.push(n);
+            riskData.push((1 / Math.sqrt(n)) * 100);
         }
 
-        ReactDOM.render(<PortfolioDiversification />, document.getElementById('root'));
+        // Risk Reduction Chart
+        new Chart(document.getElementById('riskChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Portfolio Risk (% of single asset)',
+                    data: riskData,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                xMin: 15,
+                                xMax: 15,
+                                borderColor: '#f59e0b',
+                                borderDash: [5, 5],
+                                label: {
+                                    display: true,
+                                    content: '15 assets',
+                                    position: 'start'
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { 
+                        title: { display: true, text: 'Number of Uncorrelated Return Streams' },
+                        grid: { color: '#334155' }
+                    },
+                    y: { 
+                        title: { display: true, text: 'Portfolio Risk (%)' },
+                        min: 0,
+                        max: 100,
+                        grid: { color: '#334155' }
+                    }
+                }
+            }
+        });
+
+        // Milestone table
+        const milestones = [
+            { n: 1, reduction: '0%', ratio: '1.0x', prob: '~40%' },
+            { n: 3, reduction: '42%', ratio: '1.7x', prob: '~23%' },
+            { n: 5, reduction: '55%', ratio: '2.2x', prob: '~18%' },
+            { n: 10, reduction: '68%', ratio: '3.2x', prob: '~13%' },
+            { n: 15, reduction: '74%', ratio: '3.9x', prob: '~10%' },
+            { n: 20, reduction: '78%', ratio: '4.5x', prob: '~9%' }
+        ];
+
+        const tableBody = document.getElementById('milestoneTable');
+        milestones.forEach(m => {
+            const row = document.createElement('tr');
+            row.className = 'border-b border-slate-800' + (m.n === 15 ? ' bg-emerald-500/10' : '');
+            row.innerHTML = `
+                <td class="py-2 px-3 text-emerald-400 font-mono font-bold">${m.n}</td>
+                <td class="py-2 px-3">
+                    <div class="flex items-center gap-2">
+                        <div class="h-3 bg-emerald-500 rounded" style="width: ${parseInt(m.reduction)}%; max-width: 80px;"></div>
+                        <span class="text-slate-300">${m.reduction}</span>
+                    </div>
+                </td>
+                <td class="py-2 px-3 text-sky-400 font-mono">${m.ratio}</td>
+                <td class="py-2 px-3 text-amber-400">${m.prob}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Correlation comparison chart
+        const corrLabels = [];
+        const uncorrelated = [];
+        const lowCorr = [];
+        const highCorr = [];
+
+        for (let n = 1; n <= 20; n++) {
+            corrLabels.push(n);
+            uncorrelated.push((1 / Math.sqrt(n)) * 100);
+            lowCorr.push(Math.sqrt((1 + (n-1) * 0.3) / n) * 100);
+            highCorr.push(Math.sqrt((1 + (n-1) * 0.6) / n) * 100);
+        }
+
+        new Chart(document.getElementById('correlationChart'), {
+            type: 'line',
+            data: {
+                labels: corrLabels,
+                datasets: [
+                    {
+                        label: 'Typical Stocks (ρ=0.6)',
+                        data: highCorr,
+                        borderColor: '#f87171',
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Low Correlation (ρ=0.3)',
+                        data: lowCorr,
+                        borderColor: '#fbbf24',
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Uncorrelated (ρ=0)',
+                        data: uncorrelated,
+                        borderColor: '#10b981',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { 
+                        title: { display: true, text: 'Number of Assets' },
+                        grid: { color: '#334155' }
+                    },
+                    y: { 
+                        title: { display: true, text: 'Portfolio Risk (%)' },
+                        min: 0,
+                        max: 100,
+                        grid: { color: '#334155' }
+                    }
+                }
+            }
+        });
+
+        // Interactive returns chart
+        let returnsChart;
+        const seed = 42;
+
+        function random(s) {
+            const x = Math.sin(s * 9999) * 10000;
+            return x - Math.floor(x);
+        }
+
+        function generateReturns(correlation) {
+            const asset1 = [], asset2 = [], portfolio = [], periods = [];
+            for (let i = 0; i < 50; i++) {
+                periods.push(i + 1);
+                const r1 = (random(seed + i) - 0.5) * 20;
+                const independent = (random(seed + i + 1000) - 0.5) * 20;
+                const r2 = correlation * r1 + Math.sqrt(1 - correlation * correlation) * independent;
+                asset1.push(8 + r1);
+                asset2.push(8 + r2);
+                portfolio.push(8 + (r1 + r2) / 2);
+            }
+            return { periods, asset1, asset2, portfolio };
+        }
+
+        function calcStats(arr) {
+            const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+            const variance = arr.reduce((a, b) => a + (b - mean) ** 2, 0) / arr.length;
+            return { mean: mean.toFixed(1), std: Math.sqrt(variance).toFixed(1) };
+        }
+
+        function updateReturnsChart(correlation) {
+            const data = generateReturns(correlation);
+            const stats1 = calcStats(data.asset1);
+            const stats2 = calcStats(data.asset2);
+            const statsP = calcStats(data.portfolio);
+
+            document.getElementById('asset1Mean').textContent = stats1.mean + '%';
+            document.getElementById('asset1Std').textContent = stats1.std + '%';
+            document.getElementById('asset2Mean').textContent = stats2.mean + '%';
+            document.getElementById('asset2Std').textContent = stats2.std + '%';
+            document.getElementById('portfolioMean').textContent = statsP.mean + '%';
+            document.getElementById('portfolioStd').textContent = statsP.std + '%';
+
+            let insight = '';
+            if (correlation < 0.3) {
+                insight = `With correlation = ${correlation.toFixed(1)}, the portfolio maintains a similar expected return (${statsP.mean}%) but with significantly lower volatility (${statsP.std}%). This is the Holy Grail at work!`;
+            } else if (correlation < 0.7) {
+                insight = `With correlation = ${correlation.toFixed(1)}, there's some diversification benefit, but not as dramatic. Portfolio std dev is ${statsP.std}%.`;
+            } else {
+                insight = `With correlation = ${correlation.toFixed(1)}, there's minimal diversification benefit because assets move together. Portfolio std dev is ${statsP.std}%.`;
+            }
+            document.getElementById('insightText').textContent = insight;
+
+            if (returnsChart) {
+                returnsChart.data.labels = data.periods;
+                returnsChart.data.datasets[0].data = data.asset1;
+                returnsChart.data.datasets[1].data = data.asset2;
+                returnsChart.data.datasets[2].data = data.portfolio;
+                returnsChart.update();
+            } else {
+                returnsChart = new Chart(document.getElementById('returnsChart'), {
+                    type: 'line',
+                    data: {
+                        labels: data.periods,
+                        datasets: [
+                            {
+                                label: 'Asset 1',
+                                data: data.asset1,
+                                borderColor: '#f87171',
+                                borderWidth: 1.5,
+                                pointRadius: 0,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Asset 2',
+                                data: data.asset2,
+                                borderColor: '#60a5fa',
+                                borderWidth: 1.5,
+                                pointRadius: 0,
+                                tension: 0.1
+                            },
+                            {
+                                label: '50/50 Portfolio',
+                                data: data.portfolio,
+                                borderColor: '#10b981',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { 
+                                title: { display: true, text: 'Time Period' },
+                                grid: { color: '#334155' }
+                            },
+                            y: { 
+                                title: { display: true, text: 'Return (%)' },
+                                min: -15,
+                                max: 30,
+                                grid: { color: '#334155' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Slider event
+        const slider = document.getElementById('correlationSlider');
+        const corrValue = document.getElementById('correlationValue');
+
+        slider.addEventListener('input', () => {
+            const corr = parseInt(slider.value) / 100;
+            corrValue.textContent = corr.toFixed(2);
+            updateReturnsChart(corr);
+        });
+
+        // Initialize interactive chart
+        updateReturnsChart(0);
     </script>
 </body>
 </html>
