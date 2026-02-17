@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUSI 305 Extra Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .card { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12 pt-8">
+            <h1 class="text-4xl font-bold text-emerald-400 mb-3">
+                BUSI 305 Extra Toolkit
+            </h1>
+            <p class="text-slate-400 text-lg">
+                Interactive demos to reinforce key finance concepts
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Diversification Demo Card -->
+            <a href="diversification.html" class="card block bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-emerald-500/50">
+                <div class="text-4xl mb-4">🏆</div>
+                <h2 class="text-xl font-semibold text-emerald-400 mb-2">
+                    The Holy Grail of Investing
+                </h2>
+                <p class="text-slate-400 text-sm mb-4">
+                    Explore Ray Dalio's framework for portfolio diversification. See how combining uncorrelated assets reduces risk without sacrificing returns.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">Diversification</span>
+                    <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">Correlation</span>
+                    <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">Risk Reduction</span>
+                </div>
+            </a>
+
+            <!-- Time Value of Money Card -->
+            <a href="tvm.html" class="card block bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-amber-500/50">
+                <div class="text-4xl mb-4">💰</div>
+                <h2 class="text-xl font-semibold text-amber-400 mb-2">
+                    Time Value of Money
+                </h2>
+                <p class="text-slate-400 text-sm mb-4">
+                    Understand why a dollar today is worth more than a dollar tomorrow. Explore compounding, discounting, and NPV calculations.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded">Present Value</span>
+                    <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded">Compounding</span>
+                    <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded">NPV</span>
+                </div>
+            </a>
+        </div>
+
+        <p class="text-center text-slate-600 text-sm mt-12">
+            Rice University · Jones Graduate School of Business
+        </p>
+    </div>
+</body>
+</html>
