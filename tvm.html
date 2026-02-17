@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Value of Money & Discounting Cash Flows</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        .tab-btn.active { background-color: #10b981; color: white; }
+        input[type="range"] { accent-color: #10b981; }
+        input[type="number"] { 
+            background-color: #1e293b; 
+            border: 1px solid #334155; 
+            color: white; 
+            padding: 0.5rem; 
+            border-radius: 0.5rem;
+            width: 100%;
+        }
+        input[type="number"]:focus { outline: none; border-color: #10b981; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-2 text-emerald-400">
+            The Time Value of Money
+        </h1>
+        <p class="text-center text-slate-400 mb-2">
+            Understanding Present Value & Discounting Future Cash Flows
+        </p>
+        <p class="text-center text-slate-500 text-sm mb-8 italic">
+            "A dollar today is worth more than a dollar tomorrow."
+        </p>
+
+        <!-- Core Concept Box -->
+        <div class="bg-gradient-to-r from-amber-500/10 to-emerald-500/10 rounded-xl p-6 mb-8 border border-amber-500/30">
+            <h2 class="text-xl font-semibold text-amber-400 mb-3">💡 The Fundamental Principle</h2>
+            <p class="text-slate-300 leading-relaxed mb-4">
+                Money available today is worth <span class="text-emerald-400 font-semibold">more</span> than the same amount in the future because of its 
+                <span class="text-amber-400 font-semibold">potential earning capacity</span>. This core principle underlies all of finance — 
+                from valuing investments to pricing bonds to making capital budgeting decisions.
+            </p>
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-emerald-400">$100</div>
+                    <div class="text-xs text-slate-400">Today</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-amber-400">→</div>
+                    <div class="text-xs text-slate-400">@ 10% for 10 years</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-sky-400">$259.37</div>
+                    <div class="text-xs text-slate-400">Future Value</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex gap-2 mb-6 flex-wrap">
+            <button class="tab-btn active px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="concept">📐 The Concept</button>
+            <button class="tab-btn px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="compounding">📈 Compounding</button>
+            <button class="tab-btn px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="discounting">📉 Discounting</button>
+            <button class="tab-btn px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="npv">💰 NPV Calculator</button>
+            <button class="tab-btn px-4 py-2 rounded-lg font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="applications">💼 Applications</button>
+        </div>
+
+        <!-- Tab Content: Concept -->
+        <div id="tab-concept" class="tab-content space-y-6">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-sky-400 mb-4">
+                    🤔 Why Is a Dollar Today Worth More?
+                </h2>
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+                        <div class="text-2xl mb-2">💰</div>
+                        <h3 class="text-emerald-400 font-semibold mb-2">Opportunity Cost</h3>
+                        <p class="text-sm text-slate-300">Money today can be invested to earn returns. Waiting means missing out on potential gains.</p>
+                    </div>
+                    <div class="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30">
+                        <div class="text-2xl mb-2">📉</div>
+                        <h3 class="text-amber-400 font-semibold mb-2">Inflation</h3>
+                        <p class="text-sm text-slate-300">Prices typically rise over time, reducing the purchasing power of future dollars.</p>
+                    </div>
+                    <div class="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30">
+                        <div class="text-2xl mb-2">⚠️</div>
+                        <h3 class="text-sky-400 font-semibold mb-2">Risk & Uncertainty</h3>
+                        <p class="text-sm text-slate-300">Future payments are uncertain. There's always a risk you won't receive them.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-purple-400 mb-4">🧮 The Core Formulas</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h3 class="text-emerald-400 font-semibold mb-3">Future Value (FV)</h3>
+                        <p class="text-slate-400 text-sm mb-2">How much will money today be worth in the future?</p>
+                        <div class="bg-slate-800 rounded p-3 font-mono text-center">
+                            <span class="text-sky-400">FV</span> = <span class="text-emerald-400">PV</span> × <span class="text-amber-400">(1 + r)<sup>n</sup></span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h3 class="text-amber-400 font-semibold mb-3">Present Value (PV)</h3>
+                        <p class="text-slate-400 text-sm mb-2">What is future money worth today?</p>
+                        <div class="bg-slate-800 rounded p-3 font-mono text-center">
+                            <span class="text-emerald-400">PV</span> = <span class="text-sky-400">FV</span> ÷ <span class="text-amber-400">(1 + r)<sup>n</sup></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-slate-900/50 rounded-lg">
+                    <p class="text-slate-400 text-sm">
+                        Where: <span class="text-emerald-400">PV</span> = Present Value, 
+                        <span class="text-sky-400">FV</span> = Future Value, 
+                        <span class="text-amber-400">r</span> = interest/discount rate, 
+                        <span class="text-amber-400">n</span> = number of periods
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-rose-400 mb-4">⏱️ Time Value Visualization</h2>
+                <p class="text-slate-400 mb-4 text-sm">
+                    This chart shows how $1,000 received at different points in the future is worth less and less in today's dollars (at 8% discount rate).
+                </p>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="timeValueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Compounding -->
+        <div id="tab-compounding" class="tab-content space-y-6 hidden">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-emerald-400 mb-4">
+                    📈 The Power of Compound Interest
+                </h2>
+                <p class="text-slate-300 mb-4">
+                    Albert Einstein allegedly called compound interest "the eighth wonder of the world." 
+                    Unlike simple interest, compound interest earns <span class="text-emerald-400 font-semibold">interest on your interest</span>, 
+                    creating exponential growth over time.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-slate-400 mb-2">Initial Investment ($)</label>
+                        <input type="number" id="compoundPrincipal" value="1000" min="0" step="100">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-2">Annual Interest Rate (%)</label>
+                        <input type="number" id="compoundRate" value="8" min="0" max="50" step="0.5">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-2">Time Period (Years)</label>
+                        <input type="number" id="compoundYears" value="30" min="1" max="50">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-2">Compounding Frequency</label>
+                        <select id="compoundFreq" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+                            <option value="1">Annually</option>
+                            <option value="4">Quarterly</option>
+                            <option value="12" selected>Monthly</option>
+                            <option value="365">Daily</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="calcCompound" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-2 rounded-lg mb-6">
+                    Calculate
+                </button>
+
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="compoundChart"></canvas>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30 text-center">
+                        <div class="text-sm text-slate-400">Final Value</div>
+                        <div id="compoundFinal" class="text-2xl font-bold text-emerald-400">$10,935.73</div>
+                    </div>
+                    <div class="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30 text-center">
+                        <div class="text-sm text-slate-400">Total Interest Earned</div>
+                        <div id="compoundInterest" class="text-2xl font-bold text-sky-400">$9,935.73</div>
+                    </div>
+                    <div class="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30 text-center">
+                        <div class="text-sm text-slate-400">Growth Multiple</div>
+                        <div id="compoundMultiple" class="text-2xl font-bold text-amber-400">10.9x</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-amber-400 mb-4">📏 The Rule of 72</h2>
+                <p class="text-slate-300 mb-4">
+                    A quick way to estimate how long it takes to double your money:
+                </p>
+                <div class="bg-slate-900/50 rounded-lg p-4 font-mono text-center text-xl mb-4">
+                    <span class="text-amber-400">Years to Double</span> ≈ <span class="text-emerald-400">72</span> ÷ <span class="text-sky-400">Interest Rate (%)</span>
+                </div>
+                <div class="grid md:grid-cols-4 gap-4 text-center">
+                    <div class="bg-slate-800 rounded-lg p-3">
+                        <div class="text-sky-400 font-semibold">4%</div>
+                        <div class="text-slate-300">~18 years</div>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-3">
+                        <div class="text-sky-400 font-semibold">6%</div>
+                        <div class="text-slate-300">~12 years</div>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-3">
+                        <div class="text-sky-400 font-semibold">8%</div>
+                        <div class="text-slate-300">~9 years</div>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg p-3">
+                        <div class="text-sky-400 font-semibold">12%</div>
+                        <div class="text-slate-300">~6 years</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Discounting -->
+        <div id="tab-discounting" class="tab-content space-y-6 hidden">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-amber-400 mb-4">
+                    📉 Discounting: The Reverse of Compounding
+                </h2>
+                <p class="text-slate-300 mb-4">
+                    Discounting answers the question: <span class="text-amber-400 font-semibold">"What is a future cash flow worth today?"</span>
+                    We discount future values back to the present using a discount rate that reflects the opportunity cost of capital.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div>
+                        <label class="block text-slate-400 mb-2">Future Value ($)</label>
+                        <input type="number" id="discountFV" value="10000" min="0" step="100">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-2">Discount Rate (%)</label>
+                        <input type="number" id="discountRate" value="10" min="0" max="50" step="0.5">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-2">Years Until Payment</label>
+                        <input type="number" id="discountYears" value="10" min="1" max="50">
+                    </div>
+                </div>
+
+                <button id="calcDiscount" class="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg mb-6">
+                    Calculate Present Value
+                </button>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30 text-center">
+                        <div class="text-sm text-slate-400">Present Value</div>
+                        <div id="discountPV" class="text-3xl font-bold text-amber-400">$3,855.43</div>
+                    </div>
+                    <div class="bg-rose-500/10 rounded-lg p-4 border border-rose-500/30 text-center">
+                        <div class="text-sm text-slate-400">Value Lost to Discounting</div>
+                        <div id="discountLost" class="text-3xl font-bold text-rose-400">$6,144.57</div>
+                    </div>
+                </div>
+
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="discountChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-sky-400 mb-4">🎯 Impact of Discount Rate</h2>
+                <p class="text-slate-400 mb-4 text-sm">
+                    See how different discount rates affect the present value of $10,000 received in 10 years:
+                </p>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="rateImpactChart"></canvas>
+                </div>
+                <div class="mt-4 p-4 bg-sky-500/10 border border-sky-500/30 rounded-lg">
+                    <p class="text-slate-300 text-sm">
+                        <span class="text-sky-400 font-semibold">Key Insight:</span> Higher discount rates dramatically reduce present values. 
+                        This is why the choice of discount rate is so critical in valuation — it can make or break an investment decision.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: NPV Calculator -->
+        <div id="tab-npv" class="tab-content space-y-6 hidden">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-emerald-400 mb-4">
+                    💰 Net Present Value (NPV) Calculator
+                </h2>
+                <p class="text-slate-300 mb-4">
+                    NPV is the sum of all discounted cash flows, including the initial investment. 
+                    A <span class="text-emerald-400 font-semibold">positive NPV</span> means the investment creates value; 
+                    a <span class="text-rose-400 font-semibold">negative NPV</span> means it destroys value.
+                </p>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 font-mono text-center mb-6">
+                    <span class="text-emerald-400">NPV</span> = <span class="text-rose-400">-Initial Investment</span> + 
+                    <span class="text-sky-400">Σ [CF<sub>t</sub> ÷ (1+r)<sup>t</sup>]</span>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-slate-400 mb-2">Initial Investment ($)</label>
+                        <input type="number" id="npvInitial" value="100000" min="0" step="1000">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-2">Discount Rate (%)</label>
+                        <input type="number" id="npvRate" value="10" min="0" max="50" step="0.5">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-slate-400 mb-2">Annual Cash Flows (comma-separated, e.g., "20000, 25000, 30000, 35000, 40000")</label>
+                    <input type="text" id="npvCashFlows" value="20000, 25000, 30000, 35000, 50000" 
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white font-mono">
+                </div>
+
+                <button id="calcNPV" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-2 rounded-lg mb-6">
+                    Calculate NPV
+                </button>
+
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div id="npvResultBox" class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30 text-center">
+                        <div class="text-sm text-slate-400">Net Present Value</div>
+                        <div id="npvResult" class="text-3xl font-bold text-emerald-400">$18,783.57</div>
+                    </div>
+                    <div class="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30 text-center">
+                        <div class="text-sm text-slate-400">Sum of Discounted CFs</div>
+                        <div id="npvSumPV" class="text-2xl font-bold text-sky-400">$118,783.57</div>
+                    </div>
+                    <div class="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30 text-center">
+                        <div class="text-sm text-slate-400">Payback (Discounted)</div>
+                        <div id="npvPayback" class="text-2xl font-bold text-amber-400">~4.2 years</div>
+                    </div>
+                </div>
+
+                <div style="height: 350px; width: 100%;">
+                    <canvas id="npvChart"></canvas>
+                </div>
+
+                <div id="npvDecision" class="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                    <p class="text-slate-300 text-sm">
+                        <span class="text-emerald-400 font-semibold">✓ Accept the investment!</span> 
+                        The positive NPV indicates this project creates value and earns more than the required 10% return.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-purple-400 mb-4">📊 Cash Flow Breakdown</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="py-2 px-3 text-left text-slate-400">Year</th>
+                                <th class="py-2 px-3 text-left text-slate-400">Cash Flow</th>
+                                <th class="py-2 px-3 text-left text-slate-400">Discount Factor</th>
+                                <th class="py-2 px-3 text-left text-slate-400">Present Value</th>
+                                <th class="py-2 px-3 text-left text-slate-400">Cumulative PV</th>
+                            </tr>
+                        </thead>
+                        <tbody id="npvTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Applications -->
+        <div id="tab-applications" class="tab-content space-y-6 hidden">
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-emerald-400 mb-4">💼 Real-World Applications</h2>
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+                        <h3 class="text-emerald-400 font-semibold mb-2">📈 Stock Valuation (DCF)</h3>
+                        <p class="text-sm text-slate-300">Analysts estimate a company's future cash flows and discount them back to find the intrinsic value of a stock.</p>
+                    </div>
+                    <div class="bg-sky-500/10 rounded-lg p-4 border border-sky-500/30">
+                        <h3 class="text-sky-400 font-semibold mb-2">🏠 Mortgage & Loan Pricing</h3>
+                        <p class="text-sm text-slate-300">Banks use TVM to determine monthly payments that equate to the present value of the loan amount.</p>
+                    </div>
+                    <div class="bg-amber-500/10 rounded-lg p-4 border border-amber-500/30">
+                        <h3 class="text-amber-400 font-semibold mb-2">🏭 Capital Budgeting</h3>
+                        <p class="text-sm text-slate-300">Companies use NPV to decide which projects to invest in — accept projects with positive NPV.</p>
+                    </div>
+                    <div class="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
+                        <h3 class="text-purple-400 font-semibold mb-2">📜 Bond Pricing</h3>
+                        <p class="text-sm text-slate-300">A bond's price equals the present value of all future coupon payments plus the face value at maturity.</p>
+                    </div>
+                    <div class="bg-rose-500/10 rounded-lg p-4 border border-rose-500/30">
+                        <h3 class="text-rose-400 font-semibold mb-2">🎓 Retirement Planning</h3>
+                        <p class="text-sm text-slate-300">Financial planners calculate how much to save today to achieve a desired retirement income.</p>
+                    </div>
+                    <div class="bg-teal-500/10 rounded-lg p-4 border border-teal-500/30">
+                        <h3 class="text-teal-400 font-semibold mb-2">⚖️ Legal Settlements</h3>
+                        <p class="text-sm text-slate-300">Courts use present value to determine lump-sum equivalents of future payment streams in lawsuits.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-sky-400 mb-4">🎯 Choosing the Right Discount Rate</h2>
+                <p class="text-slate-300 mb-4">
+                    The discount rate should reflect the <span class="text-amber-400 font-semibold">opportunity cost of capital</span> — 
+                    the return you could earn on an alternative investment of similar risk.
+                </p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h3 class="text-emerald-400 font-semibold mb-2">For Corporate Projects</h3>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• <span class="text-slate-400">WACC:</span> Weighted Average Cost of Capital</li>
+                            <li>• <span class="text-slate-400">Risk-adjusted:</span> Higher rate for riskier projects</li>
+                            <li>• <span class="text-slate-400">Hurdle rate:</span> Minimum acceptable return</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/50 rounded-lg p-4">
+                        <h3 class="text-amber-400 font-semibold mb-2">For Personal Investments</h3>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• <span class="text-slate-400">Risk-free rate:</span> Treasury bonds (~4-5%)</li>
+                            <li>• <span class="text-slate-400">Market return:</span> Historical equity (~8-10%)</li>
+                            <li>• <span class="text-slate-400">Personal rate:</span> Your required return</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <h2 class="text-xl font-semibold text-purple-400 mb-4">🎯 Key Takeaways</h2>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">Money today is worth more than money tomorrow due to earning potential, inflation, and risk</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">Compounding grows money exponentially — start investing early!</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">Discounting converts future cash flows to present value for comparison</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-slate-300">NPV is the gold standard for investment decisions — positive NPV = create value</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-amber-400 text-xl">⚠</span>
+                        <p class="text-slate-300">The discount rate matters enormously — small changes can flip investment decisions</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-emerald-500/10 to-sky-500/10 rounded-xl p-6 border border-emerald-500/30">
+                <h2 class="text-xl font-semibold text-emerald-400 mb-3">💡 The Bottom Line</h2>
+                <p class="text-slate-300 italic">
+                    "The time value of money is the foundation of all finance. Whether you're pricing a bond, valuing a company, 
+                    or deciding whether to take a lump sum or annuity — you're using these same principles. 
+                    Master TVM, and you've mastered the language of finance."
+                </p>
+            </div>
+        </div>
+
+        <p class="text-center text-slate-600 text-xs mt-8">
+            Interactive Time Value of Money Demonstration
+        </p>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // Chart.js defaults for dark theme
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#334155';
+
+        // Format currency
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ============ CONCEPT TAB: Time Value Chart ============
+        const timeLabels = [];
+        const timeValues = [];
+        const discountRate = 0.08;
+
+        for (let year = 0; year <= 30; year++) {
+            timeLabels.push(year);
+            timeValues.push(1000 / Math.pow(1 + discountRate, year));
+        }
+
+        new Chart(document.getElementById('timeValueChart'), {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [{
+                    label: 'Present Value of $1,000',
+                    data: timeValues,
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Present Value: ${formatCurrency(ctx.raw)}`
+                        }
+                    }
+                },
+                scales: {
+                    x: { 
+                        title: { display: true, text: 'Years Until Payment' },
+                        grid: { color: '#334155' }
+                    },
+                    y: { 
+                        title: { display: true, text: 'Present Value ($)' },
+                        min: 0,
+                        max: 1000,
+                        grid: { color: '#334155' },
+                        ticks: {
+                            callback: (val) => '$' + val
+                        }
+                    }
+                }
+            }
+        });
+
+        // ============ COMPOUNDING TAB ============
+        let compoundChart;
+
+        function calculateCompounding() {
+            const principal = parseFloat(document.getElementById('compoundPrincipal').value) || 1000;
+            const rate = (parseFloat(document.getElementById('compoundRate').value) || 8) / 100;
+            const years = parseInt(document.getElementById('compoundYears').value) || 30;
+            const freq = parseInt(document.getElementById('compoundFreq').value) || 12;
+
+            const labels = [];
+            const compoundData = [];
+            const simpleData = [];
+            const principalData = [];
+
+            for (let year = 0; year <= years; year++) {
+                labels.push(year);
+                const compound = principal * Math.pow(1 + rate / freq, freq * year);
+                const simple = principal * (1 + rate * year);
+                compoundData.push(compound);
+                simpleData.push(simple);
+                principalData.push(principal);
+            }
+
+            const finalValue = compoundData[compoundData.length - 1];
+            const interestEarned = finalValue - principal;
+            const multiple = finalValue / principal;
+
+            document.getElementById('compoundFinal').textContent = formatCurrency(finalValue);
+            document.getElementById('compoundInterest').textContent = formatCurrency(interestEarned);
+            document.getElementById('compoundMultiple').textContent = multiple.toFixed(1) + 'x';
+
+            if (compoundChart) {
+                compoundChart.data.labels = labels;
+                compoundChart.data.datasets[0].data = compoundData;
+                compoundChart.data.datasets[1].data = simpleData;
+                compoundChart.data.datasets[2].data = principalData;
+                compoundChart.update();
+            } else {
+                compoundChart = new Chart(document.getElementById('compoundChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Compound Interest',
+                                data: compoundData,
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Simple Interest',
+                                data: simpleData,
+                                borderColor: '#f59e0b',
+                                borderDash: [5, 5],
+                                tension: 0.4,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Principal Only',
+                                data: principalData,
+                                borderColor: '#64748b',
+                                borderDash: [2, 2],
+                                tension: 0,
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.raw)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                title: { display: true, text: 'Years' },
+                                grid: { color: '#334155' }
+                            },
+                            y: { 
+                                title: { display: true, text: 'Value ($)' },
+                                grid: { color: '#334155' },
+                                ticks: {
+                                    callback: (val) => '$' + val.toLocaleString()
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        document.getElementById('calcCompound').addEventListener('click', calculateCompounding);
+        calculateCompounding();
+
+        // ============ DISCOUNTING TAB ============
+        let discountChart;
+
+        function calculateDiscount() {
+            const fv = parseFloat(document.getElementById('discountFV').value) || 10000;
+            const rate = (parseFloat(document.getElementById('discountRate').value) || 10) / 100;
+            const years = parseInt(document.getElementById('discountYears').value) || 10;
+
+            const pv = fv / Math.pow(1 + rate, years);
+            const lost = fv - pv;
+
+            document.getElementById('discountPV').textContent = formatCurrency(pv);
+            document.getElementById('discountLost').textContent = formatCurrency(lost);
+
+            const labels = [];
+            const pvData = [];
+
+            for (let year = 0; year <= years; year++) {
+                labels.push(year);
+                pvData.push(fv / Math.pow(1 + rate, years - year));
+            }
+
+            if (discountChart) {
+                discountChart.data.labels = labels;
+                discountChart.data.datasets[0].data = pvData;
+                discountChart.update();
+            } else {
+                discountChart = new Chart(document.getElementById('discountChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Value Over Time',
+                            data: pvData,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#f59e0b'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `Value: ${formatCurrency(ctx.raw)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                title: { display: true, text: 'Year' },
+                                grid: { color: '#334155' }
+                            },
+                            y: { 
+                                title: { display: true, text: 'Value ($)' },
+                                grid: { color: '#334155' },
+                                ticks: {
+                                    callback: (val) => '$' + val.toLocaleString()
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        document.getElementById('calcDiscount').addEventListener('click', calculateDiscount);
+        calculateDiscount();
+
+        // Rate impact chart
+        const rateLabels = ['0%', '2%', '4%', '6%', '8%', '10%', '12%', '15%', '20%'];
+        const rates = [0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15, 0.20];
+        const pvAtRates = rates.map(r => 10000 / Math.pow(1 + r, 10));
+
+        new Chart(document.getElementById('rateImpactChart'), {
+            type: 'bar',
+            data: {
+                labels: rateLabels,
+                datasets: [{
+                    label: 'Present Value',
+                    data: pvAtRates,
+                    backgroundColor: pvAtRates.map((v, i) => 
+                        i < 3 ? 'rgba(16, 185, 129, 0.7)' : 
+                        i < 6 ? 'rgba(245, 158, 11, 0.7)' : 
+                        'rgba(239, 68, 68, 0.7)'
+                    ),
+                    borderColor: pvAtRates.map((v, i) => 
+                        i < 3 ? '#10b981' : 
+                        i < 6 ? '#f59e0b' : 
+                        '#ef4444'
+                    ),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `PV: ${formatCurrency(ctx.raw)}`
+                        }
+                    }
+                },
+                scales: {
+                    x: { 
+                        title: { display: true, text: 'Discount Rate' },
+                        grid: { color: '#334155' }
+                    },
+                    y: { 
+                        title: { display: true, text: 'Present Value of $10,000 in 10 Years' },
+                        min: 0,
+                        max: 10000,
+                        grid: { color: '#334155' },
+                        ticks: {
+                            callback: (val) => '$' + val.toLocaleString()
+                        }
+                    }
+                }
+            }
+        });
+
+        // ============ NPV TAB ============
+        let npvChart;
+
+        function calculateNPV() {
+            const initial = parseFloat(document.getElementById('npvInitial').value) || 100000;
+            const rate = (parseFloat(document.getElementById('npvRate').value) || 10) / 100;
+            const cfInput = document.getElementById('npvCashFlows').value;
+            const cashFlows = cfInput.split(',').map(cf => parseFloat(cf.trim()) || 0);
+
+            let npv = -initial;
+            let sumPV = 0;
+            let cumulativePV = -initial;
+            let paybackYear = null;
+
+            const labels = ['Year 0'];
+            const cfData = [-initial];
+            const pvData = [-initial];
+            const cumulativeData = [-initial];
+
+            const tableBody = document.getElementById('npvTable');
+            tableBody.innerHTML = `
+                <tr class="border-b border-slate-800 bg-rose-500/10">
+                    <td class="py-2 px-3 text-slate-300">0</td>
+                    <td class="py-2 px-3 text-rose-400 font-mono">(${formatCurrency(initial)})</td>
+                    <td class="py-2 px-3 text-slate-400">1.0000</td>
+                    <td class="py-2 px-3 text-rose-400 font-mono">(${formatCurrency(initial)})</td>
+                    <td class="py-2 px-3 text-rose-400 font-mono">(${formatCurrency(initial)})</td>
+                </tr>
+            `;
+
+            cashFlows.forEach((cf, i) => {
+                const year = i + 1;
+                const discountFactor = 1 / Math.pow(1 + rate, year);
+                const pv = cf * discountFactor;
+                sumPV += pv;
+                npv += pv;
+                cumulativePV += pv;
+
+                if (paybackYear === null && cumulativePV >= 0) {
+                    paybackYear = year - 1 + (cumulativePV - pv < 0 ? Math.abs(cumulativePV - pv) / pv : 0);
+                }
+
+                labels.push('Year ' + year);
+                cfData.push(cf);
+                pvData.push(pv);
+                cumulativeData.push(cumulativePV);
+
+                const row = document.createElement('tr');
+                row.className = 'border-b border-slate-800';
+                row.innerHTML = `
+                    <td class="py-2 px-3 text-slate-300">${year}</td>
+                    <td class="py-2 px-3 text-emerald-400 font-mono">${formatCurrency(cf)}</td>
+                    <td class="py-2 px-3 text-slate-400">${discountFactor.toFixed(4)}</td>
+                    <td class="py-2 px-3 text-sky-400 font-mono">${formatCurrency(pv)}</td>
+                    <td class="py-2 px-3 ${cumulativePV >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-mono">
+                        ${cumulativePV >= 0 ? '' : '('}${formatCurrency(Math.abs(cumulativePV))}${cumulativePV >= 0 ? '' : ')'}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('npvResult').textContent = formatCurrency(npv);
+            document.getElementById('npvSumPV').textContent = formatCurrency(sumPV);
+            document.getElementById('npvPayback').textContent = paybackYear ? `~${paybackYear.toFixed(1)} years` : 'Never';
+
+            const resultBox = document.getElementById('npvResultBox');
+            const decisionBox = document.getElementById('npvDecision');
+
+            if (npv >= 0) {
+                resultBox.className = 'bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30 text-center';
+                document.getElementById('npvResult').className = 'text-3xl font-bold text-emerald-400';
+                decisionBox.className = 'mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg';
+                decisionBox.innerHTML = `
+                    <p class="text-slate-300 text-sm">
+                        <span class="text-emerald-400 font-semibold">✓ Accept the investment!</span> 
+                        The positive NPV indicates this project creates value and earns more than the required ${(rate * 100).toFixed(0)}% return.
+                    </p>
+                `;
+            } else {
+                resultBox.className = 'bg-rose-500/10 rounded-lg p-4 border border-rose-500/30 text-center';
+                document.getElementById('npvResult').className = 'text-3xl font-bold text-rose-400';
+                decisionBox.className = 'mt-4 p-4 bg-rose-500/10 border border-rose-500/30 rounded-lg';
+                decisionBox.innerHTML = `
+                    <p class="text-slate-300 text-sm">
+                        <span class="text-rose-400 font-semibold">✗ Reject the investment!</span> 
+                        The negative NPV indicates this project destroys value and fails to meet the required ${(rate * 100).toFixed(0)}% return.
+                    </p>
+                `;
+            }
+
+            if (npvChart) {
+                npvChart.data.labels = labels;
+                npvChart.data.datasets[0].data = cfData;
+                npvChart.data.datasets[1].data = pvData;
+                npvChart.data.datasets[2].data = cumulativeData;
+                npvChart.update();
+            } else {
+                npvChart = new Chart(document.getElementById('npvChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Cash Flow',
+                                data: cfData,
+                                backgroundColor: cfData.map(v => v >= 0 ? 'rgba(16, 185, 129, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
+                                borderColor: cfData.map(v => v >= 0 ? '#10b981' : '#ef4444'),
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Present Value',
+                                data: pvData,
+                                backgroundColor: pvData.map(v => v >= 0 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
+                                borderColor: pvData.map(v => v >= 0 ? '#38bdf8' : '#ef4444'),
+                                borderWidth: 1
+                            },
+                            {
+                                type: 'line',
+                                label: 'Cumulative PV',
+                                data: cumulativeData,
+                                borderColor: '#f59e0b',
+                                borderWidth: 3,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#f59e0b',
+                                fill: false,
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.raw)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                grid: { color: '#334155' }
+                            },
+                            y: { 
+                                title: { display: true, text: 'Value ($)' },
+                                grid: { color: '#334155' },
+                                ticks: {
+                                    callback: (val) => '$' + val.toLocaleString()
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        document.getElementById('calcNPV').addEventListener('click', calculateNPV);
+        calculateNPV();
+    </script>
+</body>
+</html>
